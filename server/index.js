@@ -1,0 +1,42 @@
+require('dotenv').config()
+const express = require('express')
+const cors = require('cors')
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
+
+const app = express()
+const PORT = 3001
+
+app.use(cors())
+app.use(express.json())
+
+app.get('/schedule/:team', async (req, res) => {
+  const { team } = req.params
+  try {
+    const response = await fetch(`https://api-web.nhle.com/v1/club-schedule-season/${team}/now`)
+    const data = await response.json()
+
+    const now = new Date()
+    const upcomingGames = data.games.filter(game => new Date(game.startTimeUTC) > now)
+
+    res.json({ games: upcomingGames })
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch schedule' })
+  }
+})
+
+app.get('/game/:gameId', async (req, res) => {
+  const { gameId } = req.params
+  try {
+    const response = await fetch(`https://api-web.nhle.com/v1/gamecenter/${gameId}/landing`)
+    console.log('Fetching game:', gameId)
+    const data = await response.json()
+    res.json(data)
+
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch schedule' })
+  }
+})
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
