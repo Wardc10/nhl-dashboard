@@ -20,18 +20,30 @@ function formatTime(utcString) {
 }
 
 function Schedule() {
-  const [schedule, setSchedule] = useState([])
-  const [filter, setFilter] = useState('all')
+
+  const [schedule, setSchedule] = useState([])  // full schedule of games for the team
+  const [filter, setFilter] = useState('all')   // 'all', 'home', or 'away' filter for games
+  const [teams, setTeams] = useState([])        // list of all NHL teams
+  const [selectedTeam, setSelectedTeam] = useState('NJD')  // currently selected team
+  const [showTeamSelector, setTeamSelector] = useState(false)      // whether to show team picker
 
   useEffect(() => {
-    fetch('http://localhost:3001/schedule/NJD')
+    fetch(`http://localhost:3001/schedule/${selectedTeam}`)
       .then(res => res.json())
       .then(data => setSchedule(data.games))
+  }, [selectedTeam])
+
+  useEffect(() => {
+    fetch('http://localhost:3001/teams')
+      .then(res => res.json())
+      .then(data => setTeams(data.standings.sort((a, b) => 
+        a.placeName.default.localeCompare(b.placeName.default)
+      )))
   }, [])
 
   const filteredGames = schedule.filter(game => {
-    if (filter === 'home') return game.homeTeam.abbrev === 'NJD'
-    if (filter === 'away') return game.awayTeam.abbrev === 'NJD'
+    if (filter === 'home') return game.homeTeam.abbrev === selectedTeam
+    if (filter === 'away') return game.awayTeam.abbrev === selectedTeam
     return true
   })
 
@@ -51,8 +63,43 @@ function Schedule() {
   return (
     <div className="min-h-screen bg-gray-950 text-white px-6 py-10">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2 text-white">New Jersey Devils</h1>
-        <p className="text-gray-400 mb-6 text-sm uppercase tracking-widest">2025-26 Upcoming Schedule</p>
+
+        <div className="mb-2">
+          <button
+            onClick={() => setTeamSelector(!showTeamSelector)}
+            className="flex items-center gap-2 group"
+          >
+            <h1 className="text-4xl font-bold text-white group-hover:text-gray-300 transition">
+              {teams.find(team => team.teamAbbrev.default === selectedTeam)?.teamName.default ?? selectedTeam}
+            </h1>
+            <span className="text-gray-500 text-xl mt-1">{showTeamSelector ? '▲' : '▼'}</span>
+          </button>
+          <p className="text-gray-400 mt-2 mb-6 text-sm uppercase tracking-widest">2025-26 Upcoming Schedule</p>
+        </div>
+
+        {showTeamSelector && (
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-8">
+            <p className="text-xs uppercase tracking-widest text-gray-500 mb-4">Select a Team</p>
+            <div className="grid grid-cols-8 gap-3">
+              {teams.map(team => (
+                <button
+                  key={team.teamAbbrev.default}
+                  onClick={() => {
+                    setSelectedTeam(team.teamAbbrev.default)
+                    setTeamSelector(false)
+                    setFilter('all')
+                  }}
+                  className={`flex flex-col items-center gap-1 p-2 rounded-xl transition hover:bg-gray-800 ${
+                    selectedTeam === team.teamAbbrev.default ? 'bg-gray-800 border border-gray-600' : ''
+                  }`}
+                >
+                  <img src={team.teamLogo} alt={team.teamAbbrev.default} className="w-10 h-10 object-contain" />
+                  <span className="text-xs text-gray-400 text-center leading-tight">{team.placeName.default}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-3 mb-8">
           {filterBtn('All Games', 'all')}
@@ -83,6 +130,7 @@ function Schedule() {
             </Link>
           ))}
         </div>
+
       </div>
     </div>
   )
