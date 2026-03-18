@@ -13,7 +13,9 @@ const limiter = rateLimit({
   message: { error: 'Too many requests, please try again later.' }
 })
 
-app.use(cors())
+app.use(cors({
+  origin: 'https://nhl-dashboard-nine.vercel.app'
+}))
 app.use(express.json())
 app.use(limiter)
 
