@@ -26,7 +26,7 @@ function GameDetails() {
 
   useEffect(() => {
     console.log('gameId from URL:', gameId)
-    fetch(`http://localhost:3001/game/${gameId}`)
+    fetch(`https://nhl-dashboard-production.up.railway.app/game/${gameId}`)
       .then(res => res.json())
       .then(data => setGame(data))
   }, [gameId])
