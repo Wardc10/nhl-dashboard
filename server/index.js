@@ -1,13 +1,21 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const rateLimit = require('express-rate-limit')
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
 
 const app = express()
 const PORT = 3001
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { error: 'Too many requests, please try again later.' }
+})
+
 app.use(cors())
 app.use(express.json())
+app.use(limiter)
 
 app.get('/schedule/:team', async (req, res) => {
   const { team } = req.params
