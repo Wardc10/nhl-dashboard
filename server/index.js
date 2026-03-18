@@ -5,7 +5,7 @@ const rateLimit = require('express-rate-limit')
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
 
 const app = express()
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,

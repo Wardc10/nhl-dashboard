@@ -28,13 +28,13 @@ function Schedule() {
   const [showTeamSelector, setTeamSelector] = useState(false)      // whether to show team picker
 
   useEffect(() => {
-    fetch(`http://localhost:3001/schedule/${selectedTeam}`)
+    fetch(`http://nhl-dashboard-production.up.railway.app/schedule/${selectedTeam}`)
       .then(res => res.json())
       .then(data => setSchedule(data.games))
   }, [selectedTeam])
 
   useEffect(() => {
-    fetch('http://localhost:3001/teams')
+    fetch('http://nhl-dashboard-production.up.railway.app/teams')
       .then(res => res.json())
       .then(data => setTeams(data.standings.sort((a, b) => 
         a.placeName.default.localeCompare(b.placeName.default)
