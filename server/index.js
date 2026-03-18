@@ -13,9 +13,7 @@ const limiter = rateLimit({
   message: { error: 'Too many requests, please try again later.' }
 })
 
-app.use(cors({
-  origin: /\.vercel\.app$/
-}))
+app.use(cors())
 app.use(express.json())
 app.use(limiter)
 
