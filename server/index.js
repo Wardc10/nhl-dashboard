@@ -14,7 +14,7 @@ const limiter = rateLimit({
 })
 
 app.use(cors({
-  origin: 'https://nhl-dashboard-nine.vercel.app'
+  origin: /\.vercel\.app$/
 }))
 app.use(express.json())
 app.use(limiter)
