@@ -80,7 +80,7 @@ function Schedule() {
         {showTeamSelector && (
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-8">
             <p className="text-xs uppercase tracking-widest text-gray-500 mb-4">Select a Team</p>
-            <div className="grid grid-cols-8 gap-3">
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
               {teams.map(team => (
                 <button
                   key={team.teamAbbrev.default}
