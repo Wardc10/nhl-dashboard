@@ -78,28 +78,37 @@ function Schedule() {
         </div>
 
         {showTeamSelector && (
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-8">
-            <p className="text-xs uppercase tracking-widest text-gray-500 mb-4">Select a Team</p>
-            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
-              {teams.map(team => (
-                <button
-                  key={team.teamAbbrev.default}
-                  onClick={() => {
-                    setSelectedTeam(team.teamAbbrev.default)
-                    setTeamSelector(false)
-                    setFilter('all')
-                  }}
-                  className={`flex flex-col items-center gap-1 p-2 rounded-xl transition hover:bg-gray-800 ${
-                    selectedTeam === team.teamAbbrev.default ? 'bg-gray-800 border border-gray-600' : ''
-                  }`}
-                >
-                  <img src={team.teamLogo} alt={team.teamAbbrev.default} className="w-10 h-10 object-contain" />
-                  <span className="text-xs text-gray-400 text-center leading-tight">{team.placeName.default}</span>
-                </button>
-              ))}
+          <div
+            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4"
+            onClick={() => setTeamSelector(false)}
+          >
+            <div
+              className="bg-gray-900 border border-gray-800 rounded-2xl p-6 w-full max-w-2xl"
+              onClick={e => e.stopPropagation()}
+            >
+              <p className="text-xs uppercase tracking-widest text-gray-500 mb-4">Select a Team</p>
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
+                {teams.map(team => (
+                  <button
+                    key={team.teamAbbrev.default}
+                    onClick={() => {
+                      setSelectedTeam(team.teamAbbrev.default)
+                      setTeamSelector(false)
+                      setFilter('all')
+                    }}
+                    className={`flex flex-col items-center gap-1 p-2 rounded-xl transition hover:bg-gray-800 ${
+                      selectedTeam === team.teamAbbrev.default ? 'bg-gray-800 border border-gray-600' : ''
+                    }`}
+                  >
+                    <img src={team.teamLogo} alt={team.teamAbbrev.default} className="w-10 h-10 object-contain" />
+                    <span className="text-xs text-gray-400 text-center leading-tight">{team.placeName.default}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
+
 
         <div className="flex gap-3 mb-8">
           {filterBtn('All Games', 'all')}
